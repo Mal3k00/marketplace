@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style_dashboard.css') }}">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- Dropdown Menu -->
+    <div class="dropdown">
+      <button class="dropbtn">Menu</button>
+      <div class="dropdown-content">
+        <button onclick="window.location.href='{{ url_for('my_store') }}'">Go to My Store</button>
+        <button onclick="window.location.href='{{ url_for('modify_profile') }}'">Edit Profile</button>
+        <button onclick="window.location.href='{{ url_for('purchased_products') }}'">My Purchases</button>
+        <button onclick="window.location.href='{{ url_for('logout') }}'">Log out</button>
+      </div>
+    </div>
+
+    <h2>Welcome to the Dashboard</h2>
+    <h3 id="balance-display">Current Balance: €{{ balance }}</h3>
+
+    <!-- Top-up Button -->
+    <form id="chargeForm" method="POST">
+      <label for="amount">Amount to top-up:</label>
+      <input type="number" id="amount" name="amount" step="0.01" required>
+      <button type="submit">Top-up</button>
+    </form>
+
+    <!-- Product Search -->
+    <h3>Search for products:</h3>
+    <form id="searchForm">
+      <input type="text" id="name" name="name" placeholder="Product name">
+      <div class="mb-3">
+        <label for="category">Category:</label>
+        <select name="category" id="category" class="form-control" required>
+          <option value="">Select a category</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Clothing">Clothing</option>
+          <option value="Home">Home</option>
+          <option value="Toys">Toys</option>
+          <option value="Books">Books</option>
+          <option value="Sports">Sports</option>
+          <option value="Beauty">Beauty</option>
+          <option value="Food">Food</option>
+          <option value="Automobiles">Automobiles</option>
+          <option value="Gardening">Gardening</option>
+          <option value="Furniture">Furniture</option>
+          <option value="Musical Instruments">Musical Instruments</option>
+          <option value="Health">Health</option>
+          <option value="Technology">Technology</option>
+          <option value="Photography">Photography</option>
+          <option value="Accessories">Accessories</option>
+          <option value="Kids">Kids</option>
+          <option value="DIY">DIY</option>
+        </select>
+      </div>
+      <input type="number" id="min_price" name="min_price" step="0.01" placeholder="Minimum price">
+      <input type="number" id="max_price" name="max_price" step="0.01" placeholder="Maximum price">
+      <button type="submit">Search</button>
+    </form>
+
+    <!-- Product List -->
+    <h3>Available products:</h3>
+    <div id="products-list" class="products-list">
+      {% for product in products %}
+        <div class="product">
+          <div class="product-image">
+            {% if product[6] %}
+              <img src="{{ product[6] }}" alt="Product image">
+            {% else %}
+              <img src="{{ url_for('static', filename='img_not_aviable.jpg') }}" alt="Image not available">
+            {% endif %}
+          </div>
+          <div class="product-details">
+            <h4>{{ product[1] }}</h4>
+            <p><strong>Category:</strong> {{ product[2] }}</p>
+            <p><strong>Price:</strong> €{{ product[3] }}</p>
+            <p><strong>Quantity:</strong> {{ product[4] }}</p>
+            <p><strong>Seller:</strong> {{ product[5] }}</p>
+            <p><a href="{{ url_for('view_product', product_id=product[0]) }}">View</a></p>
+          </div>
+        </div>
+      {% else %}
+        <p>No products available.</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <script>
+    $(document).ready(function(){
+      // Handle the "Top-up" form submission
+      $("#chargeForm").on("submit", function(event){
+        event.preventDefault();
+
+        let amount = $("#amount").val();
+        if (amount <= 0) {
+          alert("The amount must be positive.");
+          return false;
+        }
+
+        $.ajax({
+          url: "{{ url_for('charge_balance') }}",
+          type: "POST",
+          data: { amount: amount },
+          success: function(response) {
+            if(response.success) {
+              // Update displayed balance
+              $("#balance-display").text("Current Balance: €" + response.new_balance);
+              alert("Balance updated successfully!");
+            } else {
+              alert("Error: " + response.message);
+            }
+          },
+          error: function(xhr, status, error) {
+            alert("Request error: " + error);
+          }
+        });
+      });
+
+      // Handle product search via AJAX
+      $("#searchForm").on("submit", function(event){
+        event.preventDefault();
+        let formData = $(this).serialize();
+
+        $.ajax({
+          url: "{{ url_for('dashboard') }}",
+          type: "GET",
+          data: formData,
+          success: function(response){
+            let productsList = $("#products-list");
+            productsList.html("");
+
+            if (response.products.length > 0) {
+              response.products.forEach(product => {
+                let productHtml = `
+                  <div class="product">
+                    <div class="product-image">
+                      <img src="${product.image || '{{ url_for("static", filename="img_not_aviable.jpg") }}'}" alt="Product image">
+                    </div>
+                    <div class="product-details">
+                      <h4>${product.name}</h4>
+                      <p><strong>Category:</strong> ${product.category}</p>
+                      <p><strong>Price:</strong> €${product.price}</p>
+                      <p><strong>Quantity:</strong> ${product.quantity}</p>
+                      <p><strong>Seller:</strong> ${product.seller_name}</p>
+                      <p><a href="/product_details/${product.id}">View</a></p>
+                    </div>
+                  </div>
+                `;
+                productsList.append(productHtml);
+              });
+            } else {
+              productsList.html("<p>No products available.</p>");
+            }
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Product</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_mystore.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>Edit Product</h2>
+        
+        <form method="POST" enctype="multipart/form-data">
+            <label for="product_name">Product Name:</label>
+            <input type="text" id="product_name" name="name" value="{{ product[1] }}" required>
+        
+            <label for="category">Category:</label>
+            <select id="category" name="category" required>
+                <option value="{{ product[2] }}" selected>{{ product[2] }}</option>
+                <!-- Add the same category options here -->
+            </select>
+        
+            <label for="price">Price (€):</label>
+            <input type="number" id="price" name="price" step="0.01" value="{{ product[3] }}" required>
+        
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" name="quantity" value="{{ product[4] }}" required>
+        
+            <label for="description">Description:</label>
+            <textarea id="description" name="description">{{ product[5] }}</textarea>
+        
+            <label for="images">Product Images:</label>
+            <input type="file" id="img1" name="img1" accept="image/*">
+            <input type="file" id="img2" name="img2" accept="image/*">
+            <input type="file" id="img3" name="img3" accept="image/*">
+        
+            <button type="submit">Update Product</button>
+        </form>
+
+        <a href="{{ url_for('my_store') }}">Back to My Store</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Purchased Products</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style_purchase.css') }}">
+  <!-- Add jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function() {
+        // Hover effect on table rows
+        $("table tr").hover(
+            function() {
+                $(this).css("background-color", "#f1f1f1");
+            },
+            function() {
+                $(this).css("background-color", "");
+            }
+        );
+
+        // Button click animation to return to dashboard
+        $("button").on("click", function() {
+            $(this).animate({
+                opacity: 0.7,
+                padding: "12px 18px"
+            }, 200, function() {
+                window.location.href = $(this).attr("onclick");
+            });
+        });
+    });
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h2>My Purchased Products</h2>
+    
+    {% if purchases %}
+      <table>
+        <thead>
+          <tr>
+            <th>Transaction ID</th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Total Price</th>
+            <th>Category</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for purchase in purchases %}
+            <tr>
+              <!-- Fields: 0: ts.id, 1: ts.id_product, 2: quantity, 3: total_import, 4: p.name, 5: p.category, 6: p.price, 7: p.description -->
+              <td>{{ purchase[0] }}</td>
+              <td>{{ purchase[4] }}</td>
+              <td>{{ purchase[2] }}</td>
+              <td>€{{ purchase[3] }}</td>
+              <td>{{ purchase[5] }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>You haven't made any purchases yet.</p>
+    {% endif %}
+    
+    <button onclick="window.location.href='{{ url_for('dashboard') }}'">Return to Dashboard</button>
+  </div>
+</body>
+</html>

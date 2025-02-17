@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Product</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_mystore.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>{{ product.name }}</h2>
+        <p><strong>Category:</strong> {{ product.category }}</p>
+        <p><strong>Price:</strong> €{{ product.price }}</p>
+        <p><strong>Available Quantity:</strong> {{ product.quantity }}</p>
+        <p><strong>Description:</strong> {{ product.description }}</p>
+
+        {% if product.images %}
+            <div class="product-images">
+                {% for image in product.images %}
+                    <!-- If the image is not in PNG format, change the MIME type (e.g., to image/jpeg) -->
+                    <img src="data:image/png;base64,{{ image }}" alt="Product Image" class="img-fluid">
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No images available.</p>
+        {% endif %}
+
+        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary mt-3">Return to Dashboard</a>
+    </div>
+</body>
+</html>

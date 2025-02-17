@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Store</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_mystore.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .product-images img {
+            max-width: 100px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Welcome to Your Store</h2>
+        <h3>Your Products</h3>
+        <div class="products-list">
+            {% if products %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                            <tr>
+                                <td>{{ product.id }}</td>
+                                <td>{{ product.name }}</td>
+                                <td>{{ product.category }}</td>
+                                <td>€{{ product.price }}</td>
+                                <td>
+                                    {% if product.quantity == 0 %}
+                                        <span class="text-danger">Out of Stock</span>
+                                    {% else %}
+                                        {{ product.quantity }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('product_details', product_id=product.id) }}" class="btn btn-info">View</a>
+                                    <a href="{{ url_for('edit_product', product_id=product.id) }}" class="btn btn-warning">Edit</a>
+                                    <button class="btn btn-danger delete-btn" data-id="{{ product.id }}">Remove</button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>You haven't uploaded any products yet.</p>
+            {% endif %}
+        </div>
+
+        <h3>Add a New Product</h3>
+        <form id="addProductForm" method="POST" enctype="multipart/form-data">
+            <div class="mb-3">
+                <input type="text" name="name" class="form-control" placeholder="Product Name" required>
+            </div>
+            <div class="mb-3">
+                <select name="category" class="form-control" required>
+                    <option value="">Select a category</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Clothing">Clothing</option>
+                    <option value="Home">Home</option>
+                    <option value="Toys">Toys</option>
+                    <option value="Books">Books</option>
+                    <option value="Sports">Sports</option>
+                    <option value="Beauty">Beauty</option>
+                    <option value="Groceries">Groceries</option>
+                    <option value="Automobiles">Automobiles</option>
+                    <option value="Gardening">Gardening</option>
+                    <option value="Furniture">Furniture</option>
+                    <option value="Musical Instruments">Musical Instruments</option>
+                    <option value="Health">Health</option>
+                    <option value="Technology">Technology</option>
+                    <option value="Photography">Photography</option>
+                    <option value="Accessories">Accessories</option>
+                    <option value="Children">Children</option>
+                    <option value="DIY">DIY</option>
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <input type="number" name="price" step="0.01" class="form-control" placeholder="Price (€)" required>
+            </div>
+            <div class="mb-3">
+                <input type="number" name="quantity" class="form-control" placeholder="Quantity" required>
+            </div>
+            <div class="mb-3">
+                <textarea name="description" class="form-control" placeholder="Description" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label>Product Images (max 3):</label>
+                <input type="file" name="img1" class="form-control" accept="image/*">
+                <input type="file" name="img2" class="form-control" accept="image/*">
+                <input type="file" name="img3" class="form-control" accept="image/*">
+            </div>
+            <button type="submit" class="btn btn-success">Add Product</button>
+        </form>
+
+        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary mt-3">
+            <i class="fas fa-arrow-left"></i> Return to Dashboard
+        </a>
+    </div>
+
+    <script>
+        $(document).ready(function(){
+            $(".delete-btn").on("click", function(){
+                var productId = $(this).data("id");
+                if (confirm("Are you sure you want to remove this product?")) {
+                    $.post("{{ url_for('delete_product') }}", {id: productId}, function(response){
+                        if (response.success) {
+                            alert("Product successfully removed!");
+                            window.location.reload();
+                        } else {
+                            alert("Error: " + response.message);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

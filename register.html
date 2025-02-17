@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_register.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h2>Registration</h2>
+        
+        <!-- Flash Messages for errors or successes -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <p class="{{ category }}">{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        <form id="registerForm" method="POST">
+            <label for="name">First Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="surname">Last Name:</label>
+            <input type="text" id="surname" name="surname" required>
+
+            <label for="birth_date">Date of Birth:</label>
+            <input type="date" id="birth_date" name="birth_date" required>
+
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <label for="confirm_password">Confirm Password:</label>
+            <input type="password" id="confirm_password" name="confirm_password" required>
+
+            <button type="submit">Register</button>
+        </form>
+        
+        <p>Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+    </div>
+
+    <script>
+        $(document).ready(function(){
+            $("#registerForm").on("submit", function(){
+                let password = $("#password").val();
+                let confirmPassword = $("#confirm_password").val();
+
+                if (password.length < 6) {
+                    alert("Password must be at least 6 characters long.");
+                    return false;
+                }
+
+                if (password !== confirmPassword) {
+                    alert("Passwords do not match.");
+                    return false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

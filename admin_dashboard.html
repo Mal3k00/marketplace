@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="admin-container">
+        <h1>Administrator Dashboard</h1>
+        <p>Welcome to the administration dashboard. From here, you can manage the marketplace.</p>
+
+        <div class="admin-actions">
+            <a href="/manage_users" class="admin-btn">Manage Users</a>
+        </div>
+    </div>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .admin-container {
+            background: white;
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .admin-actions {
+            margin-top: 20px;
+        }
+
+        .admin-btn {
+            display: block;
+            padding: 10px;
+            margin: 10px 0;
+            text-decoration: none;
+            background: #007bff;
+            color: white;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .admin-btn.logout {
+            background: #dc3545;
+        }
+
+        .admin-btn:hover {
+            opacity: 0.8;
+        }
+    </style>
+</body>
+</html>
+ 

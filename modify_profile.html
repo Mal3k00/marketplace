@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Modify Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_modify_profile.css') }}">
+    <!-- Add jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Animation on button click to update profile
+            $("button").on("click", function() {
+                $(this).animate({
+                    opacity: 0.7,
+                    padding: "12px 18px"
+                }, 200);
+            });
+            
+            // Check if password fields match
+            $("form").on("submit", function(event) {
+                var newPassword = $("#new_password").val();
+                var confirmPassword = $("#confirm_password").val();
+                
+                if (newPassword !== confirmPassword) {
+                    alert("Passwords do not match!");
+                    event.preventDefault(); // Prevent form submission
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>Modify Profile</h2>
+        <form action="{{ url_for('modify_profile') }}" method="POST">
+            <label for="name">First Name:</label>
+            <input type="text" id="name" name="name" value="{{ user[0] }}" required>
+            
+            <label for="surname">Last Name:</label>
+            <input type="text" id="surname" name="surname" value="{{ user[1] }}" required>
+            
+            <label for="birth_date">Date of Birth:</label>
+            <input type="date" id="birth_date" name="birth_date" value="{{ user[2] }}" required>
+            
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" value="{{ user[3] }}" required>
+            
+            <h3>Change Password (optional)</h3>
+            <p>Leave the fields empty if you do not wish to change the password.</p>
+            
+            <label for="new_password">New Password:</label>
+            <input type="password" id="new_password" name="new_password">
+            
+            <label for="confirm_password">Confirm New Password:</label>
+            <input type="password" id="confirm_password" name="confirm_password">
+            
+            <button type="submit">Update Profile</button>
+        </form>
+    </div>
+</body>
+</html>

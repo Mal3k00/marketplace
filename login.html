@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_login.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h2>Login</h2>
+
+        <!-- Flash messages for errors or successes -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <p class="{{ category }}">{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <form id="loginForm" method="POST">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="submit">Login</button>
+        </form>
+        
+        <p>Don't have an account? <a href="{{ url_for('register') }}">Sign up</a></p>
+    </div>
+
+    <script>
+        $(document).ready(function(){
+            $("#loginForm").on("submit", function(){
+                let username = $("#username").val();
+                let password = $("#password").val();
+
+                if (username.trim() === "" || password.trim() === "") {
+                    alert("Both fields are required.");
+                    return false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
